@@ -24,7 +24,8 @@ export const Contact = ({ profile }: { profile: Profile | null }) => {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.from("messages").insert([parsed.data]);
+    const { name, email, message } = parsed.data;
+    const { error } = await supabase.from("messages").insert({ name: name!, email: email!, message: message! });
     setLoading(false);
     if (error) {
       toast.error("Could not send. Try again.");
