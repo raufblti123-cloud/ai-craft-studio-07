@@ -1,6 +1,57 @@
+import { useState } from "react";
 import { ArrowUpRight, Github } from "lucide-react";
 import { Project } from "@/lib/types";
 import { SectionHeading } from "./SectionHeading";
+
+/**
+ * Build a resized thumbnail URL using Supabase Storage's image transformation
+ * endpoint. Falls back to the original URL for non-Supabase-hosted images.
+ *
+ * Supabase exposes transforms via:
+ *   /storage/v1/object/public/<bucket>/<path>
+ *   → /storage/v1/render/image/public/<bucket>/<path>?width=...&quality=...
+ */
+const buildThumb = (url: string, width: number, quality = 60) => {
+  if (!url) return url;
+  if (url.includes("/storage/v1/object/public/")) {
+    const transformed = url.replace(
+      "/storage/v1/object/public/",
+      "/storage/v1/render/image/public/"
+    );
+    const sep = transformed.includes("?") ? "&" : "?";
+    return `${transformed}${sep}width=${width}&quality=${quality}&resize=cover`;
+  }
+  return url;
+};
+
+const ProjectThumb = ({ src, alt }: { src: string; alt: string }) => {
+  const [loaded, setLoaded] = useState(false);
+  // Tiny blurred placeholder (~24px) loaded instantly, then swapped for the
+  // crisp ~800px thumbnail on load. A 1600px srcSet entry serves retina screens.
+  const placeholder = buildThumb(src, 24, 30);
+  const thumb = buildThumb(src, 800, 65);
+  const retina = buildThumb(src, 1600, 65);
+
+  return (
+    <div className="relative aspect-video mb-5 overflow-hidden border border-border bg-muted">
+      <img
+        src={placeholder}
+        alt=""
+        aria-hidden="true"
+        className={`absolute inset-0 w-full h-full object-cover scale-110 blur-lg transition-opacity duration-500 ${loaded ? "opacity-0" : "opacity-100"}`}
+      />
+      <img
+        src={thumb}
+        srcSet={`${thumb} 1x, ${retina} 2x`}
+        alt={alt}
+        loading="lazy"
+        decoding="async"
+        onLoad={() => setLoaded(true)}
+        className={`relative w-full h-full object-cover transition-all duration-700 group-hover:scale-105 ${loaded ? "opacity-100" : "opacity-0"}`}
+      />
+    </div>
+  );
+};
 
 export const Projects = ({ projects }: { projects: Project[] }) => (
   <section id="projects" className="py-32">
@@ -16,14 +67,7 @@ export const Projects = ({ projects }: { projects: Project[] }) => (
         {projects.map((p) => (
           <article key={p.id} className="card-cyber corner-brackets group p-6 flex flex-col">
             {p.image_url && (
-              <div className="aspect-video mb-5 overflow-hidden border border-border bg-muted">
-                <img
-                  src={p.image_url}
-                  alt={`${p.title} preview`}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-              </div>
+              <ProjectThumb src={p.image_url} alt={`${p.title} preview`} />
             )}
             <h3 className="font-display text-2xl font-medium mb-2">{p.title}</h3>
             {p.description && (
