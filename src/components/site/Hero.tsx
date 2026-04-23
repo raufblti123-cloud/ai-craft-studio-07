@@ -84,24 +84,28 @@ export const Hero = ({ profile }: { profile: Profile | null }) => {
         </div>
         </div>
 
-        {/* Portrait */}
+        {/* Portrait — circular */}
         <div className="hidden lg:block animate-fade-up" style={{ animationDelay: "0.4s" }}>
           <div className="relative w-[320px] xl:w-[380px] aspect-square">
-            <div className="absolute -inset-2 border border-primary/30" />
-            <div className="absolute -top-3 -left-3 font-mono text-[10px] text-primary tracking-widest">
+            <div className="absolute -inset-4 rounded-full border border-dashed border-primary/30 animate-[spin_22s_linear_infinite]" />
+            <div className="absolute -inset-1.5 rounded-full border border-primary/40" />
+            <div className="absolute inset-0 rounded-full bg-primary/10 blur-2xl" />
+
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 font-mono text-[10px] text-primary tracking-widest bg-background px-2 z-10">
               ID.0x01
             </div>
-            <div className="absolute -bottom-3 -right-3 font-mono text-[10px] text-muted-foreground tracking-widest">
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 font-mono text-[10px] text-muted-foreground tracking-widest bg-background px-2 z-10">
               RAUF.KHAN
             </div>
+
             <img
               src={profileImg}
               alt={`${profile?.name ?? "Rauf Khan"} — ${profile?.role ?? "Generative AI Student"}`}
               loading="eager"
               decoding="async"
-              className="relative w-full h-full object-cover grayscale-[0.15] contrast-[1.05] border border-border"
+              className="relative w-full h-full object-cover rounded-full grayscale-[0.15] contrast-[1.05] border-2 border-border shadow-[0_0_60px_-15px_hsl(var(--primary)/0.5)]"
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-transparent mix-blend-overlay" />
+            <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-tr from-primary/15 via-transparent to-transparent mix-blend-overlay" />
           </div>
         </div>
       </div>
