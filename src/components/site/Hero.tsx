@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { Profile } from "@/lib/types";
+import profileImg from "@/assets/profile.png";
 
 const phrases = ["Generative AI Student", "Prompt Engineer", "AI Builder", "Lifelong Learner"];
 
@@ -29,7 +30,8 @@ export const Hero = ({ profile }: { profile: Profile | null }) => {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center pt-24 pb-16">
-      <div className="container-tight w-full">
+      <div className="container-tight w-full grid lg:grid-cols-[1fr_auto] gap-12 items-center">
+        <div>
         <div className="flex items-center gap-3 mb-8 animate-fade-up">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-60 animate-ping" />
@@ -79,6 +81,28 @@ export const Hero = ({ profile }: { profile: Profile | null }) => {
               {profile.location}
             </div>
           )}
+        </div>
+        </div>
+
+        {/* Portrait */}
+        <div className="hidden lg:block animate-fade-up" style={{ animationDelay: "0.4s" }}>
+          <div className="relative w-[320px] xl:w-[380px] aspect-square">
+            <div className="absolute -inset-2 border border-primary/30" />
+            <div className="absolute -top-3 -left-3 font-mono text-[10px] text-primary tracking-widest">
+              ID.0x01
+            </div>
+            <div className="absolute -bottom-3 -right-3 font-mono text-[10px] text-muted-foreground tracking-widest">
+              RAUF.KHAN
+            </div>
+            <img
+              src={profileImg}
+              alt={`${profile?.name ?? "Rauf Khan"} — ${profile?.role ?? "Generative AI Student"}`}
+              loading="eager"
+              decoding="async"
+              className="relative w-full h-full object-cover grayscale-[0.15] contrast-[1.05] border border-border"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-primary/10 via-transparent to-transparent mix-blend-overlay" />
+          </div>
         </div>
       </div>
 
